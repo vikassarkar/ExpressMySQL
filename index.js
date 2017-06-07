@@ -18,8 +18,8 @@ app.set('port', (process.env.PORT, envConfig.envport))
  * Opening port lo listion to url API's
  */
 app.listen(app.get('port'), function () {
-    //console.log('::Listining:: http://localhost:'+app.get('port'));
-    console.log('::Listining:: http://ec2-13-126-22-246.ap-south-1.compute.amazonaws.com:'+app.get('port'));
+    console.log('::Listining:: http://localhost:'+app.get('port'));
+    //console.log('::Listining:: http://ec2-13-126-22-246.ap-south-1.compute.amazonaws.com:'+app.get('port'));
 });
 
 

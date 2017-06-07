@@ -84,7 +84,6 @@ var _sendTemporaryPasswordEmail = function(userEmail, resp, connection){
     var mailingAddress = userEmail;
     var mailingTemplate = _generateMailTemplate(secondaryPassword);
     var mailOptions = _mailContent(mailSubject, mailingAddress, mailingTemplate);
-    console.log(JSON.stringify(mailOptions));
     transporter.sendMail(mailOptions, function(error, info){
         if (!error) {
             resp.send({success:{

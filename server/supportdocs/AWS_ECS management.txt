@@ -1,6 +1,5 @@
 //iptables -A PREROUING -t nat -i eth0 -p tcp --deport 80 -j REDIRECT --to-port 8080
 //to get api with without :port in url by putty
-//to run node app forever - $ sudo npm install -g forever
 
 
 Add instance..
@@ -47,3 +46,6 @@ sudo apt-get remove nodejs
 sudo apt-get remove npm
 sudo apt-get update
 
+////////to run node app forever - $ sudo npm install -g forever
+forever start index.js
+forever stop index.js
