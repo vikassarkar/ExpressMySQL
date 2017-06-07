@@ -1,0 +1,49 @@
+//iptables -A PREROUING -t nat -i eth0 -p tcp --deport 80 -j REDIRECT --to-port 8080
+//to get api with without :port in url by putty
+//to run node app forever - $ sudo npm install -g forever
+
+
+Add instance..
+
+chmod 400 pocvalue.pem
+ssh -i "pocvalue.pem" ubuntu@13.126.22.246
+
+yes
+
+sudo apt-get update
+sudo apt-get upgrade
+
+////////set nodejs envirnoment
+nodejs.org > download nodejs via package manager > Debian and Ubuntu based Linux distributions > 
+
+Alternatively, for Node.js v7:
+
+curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -
+sudo apt-get install -y nodejs
+
+
+node -v
+git --version
+
+/////////working with git
+git clone https://github.com/vikassarkar/expressfirstTrial.git
+cd expressfirstTrial
+ls ----> displays all structure in repo
+cat index.js -----> displays content in index.js file
+nano index.js -----> now you can edit index.js file in this server on cmd
+npm install
+node index.js
+
+///////for bycryp env setup in ubuntu server
+///////required g++, make and python
+///////https://github.com/kelektiv/node.bcrypt.js/wiki/Installation-Instructions
+sudo apt-get install -y g++ make python
+npm install bcrypt
+npm install -g node-gyp
+sudo apt install node-gyp
+
+///////uninstalling node
+sudo apt-get remove nodejs
+sudo apt-get remove npm
+sudo apt-get update
+

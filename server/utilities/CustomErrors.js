@@ -1,0 +1,116 @@
+/**
+ * handle error when model of request mismatches with recived request
+ */
+var _modelMismatch = function(resp, connection){
+    console.log('::::::::::::Error Bad request or Request mismatch::::::::::::');
+    if(connection){
+        connection.release();
+    }
+    resp.status(400)
+    resp.send({ 
+        error: {
+            status: "400",                
+            message: "Bad request or Request mismatch",
+            description: "Any of request key and value pair is a required not passed"
+        } 
+    });
+}
+
+/**
+ * handle error if user already exist in DB
+ */
+var _userExist = function(resp, connection){
+    console.log('::::::::::Error user already exist::::::::::');
+        if(connection){
+        connection.release();
+    }
+    resp.status(409)
+    resp.send({ 
+        error: {
+            status: "409",                
+            message: "User already exist",
+            description: "The request could not be completed due to a conflict with the current state of the target resource"
+        }
+    });
+}
+
+/**
+ * Handle error if saving data in any of DB fails
+ */
+var _cannotSaveUser = function(resp, connection){
+    console.log('::::::::::::::Error Internal Server Error::::::::::::::');
+        if(connection){
+        connection.release();
+    }
+    resp.status(500)
+    resp.send({ 
+        error: {
+            status: "500",                
+            message: "Internal Server Error",
+            description: "DB table row mismatch. The server has encountered a situation it doesn't know how to handle"
+        }
+    });
+}
+
+/**
+ * Handle error if username/useremail and password mismatches
+ */
+var _usernamePasswordMismatch = function(resp, connection){
+    console.log('::::::::::Error multiple users for this login::::::::::');
+    if(connection){
+        connection.release();
+    }
+    resp.status(401)
+    resp.send({ 
+        error: {
+            status: "401",                
+            message: "Unaurthorized login",
+            description: "User email or username and password combination is mismatching in resources, Please try again."
+        }
+    });
+}
+
+/**
+ *Handle error if multiple user details exist whie logging in
+ */
+var _multipleUsers = function(resp, connection){
+    console.log('::::::::::Error multiple users for this login::::::::::');
+    if(connection){
+        connection.release();
+    }
+    resp.status(409)
+    resp.send({ 
+        error: {
+            status: "409",                
+            message: "Multiple users for this login",
+            description: "The request could not be completed due to a multiple user for current resources. contact your administrator."
+        }
+    });
+}
+
+/**
+ * Handle no data error condition 
+ */
+var _noDataFound = function(resp, connection){
+    console.log('::::::::::Error no related data found::::::::::');
+    if(connection){
+        connection.release();
+    }
+    resp.status(444)
+    resp.send({ 
+        error: {
+            status: "444",                
+            message: "No data found",
+            description: "The request could not be completed as no data related to your request was found."
+        }
+    });
+}
+
+module.exports = {
+    'modelMismatch': _modelMismatch,
+    'userExist': _userExist,
+    'cannotSaveUser': _cannotSaveUser,
+    'usernamePasswordMismatch':_usernamePasswordMismatch,
+    'multipleUsers':_multipleUsers,
+    'noDataFound': _noDataFound
+}
