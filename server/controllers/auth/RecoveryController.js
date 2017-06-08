@@ -35,10 +35,9 @@ module.exports = function(app, route, dbConnection){
 					function(err, authDetails, fields){                        
 						if (!err) {
 							if(authDetails.length > 0){						
-								console.log(':::::::::::::Got recovery user:::::::::::::');
-								connection.release();	
+								console.log(':::::::::::::Got recovery auth:::::::::::::');
 								// send mail with defined transport object
-								recoveryUtils.sendTemporaryPasswordEmail(authDetails[0].UserEmail, resp, connection);							
+								recoveryUtils.confirmUserForEmail(dbConnection, authDetails[0].UserEmail, authDetails[0].CustomerId, resp, connection)
 							}else{
 								customErrors.noDataFound(resp, connection)
 							}                    

@@ -106,11 +106,29 @@ var _noDataFound = function(resp, connection){
     });
 }
 
+/**
+ * email sending failed to user
+ */
+var _sendingEmailFailed = function(resp, connection){
+    console.log('::::::::::Error email not send::::::::::');
+    if(connection){
+        connection.release();
+    }
+    resp.status(550)
+    resp.send({ 
+        error: {
+            status: "550",                
+            message: "SMTP error",
+            description: "Unable to send email to defined email id."
+        }
+    });
+}
 module.exports = {
     'modelMismatch': _modelMismatch,
     'userExist': _userExist,
     'cannotSaveUser': _cannotSaveUser,
     'usernamePasswordMismatch':_usernamePasswordMismatch,
     'multipleUsers':_multipleUsers,
-    'noDataFound': _noDataFound
+    'noDataFound': _noDataFound,
+    'sendingEmailFailed': _sendingEmailFailed
 }
