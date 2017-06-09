@@ -57,6 +57,7 @@ var _generateMailSubject = function (mailCode) {
  * generate email template
  */
 var _generateMailTemplate = function (secondaryPassword, userFullName) {
+    console.log(userFullName)
     var template =  recoveryEmails.resetEmailFormat(secondaryPassword, userFullName)
     return template;
 }
@@ -82,15 +83,17 @@ var _confirmUserForEmail = function(dbConnection, userEmail, customerId, resp, c
         [customerId], 
         function(err, userDetails, fields){                        
             if (!err) {
+                console.log(':::::::::::::In users finding user:::::::::::::');
                 if(userDetails.length > 0){						
                     console.log(':::::::::::::Got recovery user:::::::::::::');
                     var userFullName = userDetails[0].FirstName ? userDetails[0].FirstName : ""+" "+userDetails[0].LastName;
-                   console.log(userFullName)
-                    _saveTempPassword(dbConnection, userEmail, userFullName, resp, connection);
+                    _saveTempPassword(dbConnection, userEmail, customerId, userFullName, resp, connection);
                 }else{
+                    console.log(':::::::::::::no user found:::::::::::::');
                     customErrors.noDataFound(resp, connection)
                 }                    
             }else{
+                console.log(':::::::::::::Cannot get user:::::::::::::');
                 //connection released                
                 connectionErrors.queryError(err, connection);
             }
@@ -103,20 +106,27 @@ var _confirmUserForEmail = function(dbConnection, userEmail, customerId, resp, c
  */
 var _saveTempPassword = function(dbConnection, userEmail, customerId, userFullName, resp, connection){
     var secondaryPassword = _generateSecondaryPassword();
-    dbConnection.query('UPDATE auth SET TempPassword = ? WHERE CustomerId = ?',
-        [secondaryPassword, customerId],
-        function(err, rows, fields){                        
-            if (!err) {					
-                console.log(':::::::::::::Temp Password saved:::::::::::::');
-                console.log(rows);
-                _sendTemporaryPasswordEmail(dbConnection, customerId, secondaryPassword, userEmail, userFullName, resp, connection);
-                                   
-            }else{
-                //connection released                
-                connectionErrors.queryError(err, connection);
+    if(secondaryPassword){
+        console.log(secondaryPassword)
+        dbConnection.query('UPDATE auth SET TempPassword = ? WHERE CustomerId = ?',
+            [secondaryPassword, customerId],
+            function(err, rows, fields){            
+                console.log(':::::::::::::in saving Temp Password:::::::::::::');            
+                if (!err) {					
+                    console.log(':::::::::::::Temp Password saved:::::::::::::');
+                    _sendTemporaryPasswordEmail(dbConnection, customerId, secondaryPassword, userEmail, userFullName, resp, connection);
+                                    
+                }else{
+                    console.log(':::::::::::::Cannot save Temp Password:::::::::::::'); 
+                    //connection released                
+                    connectionErrors.queryError(err, connection);
+                }
             }
-        }
-    );
+        );
+    }else{
+        console.log('::::::::::SEC pass not generated::::::::::::::::');
+        customErrors.sendingEmailFailed(resp, connection); 
+    }
 }
 
 /**
@@ -131,16 +141,16 @@ var _sendTemporaryPasswordEmail = function (dbConnection, customerId, secondaryP
     transporter.sendMail(mailOptions, function (error, info) {
         console.log(":::::::::::::::::In sending mail::::::::::::::::::::")
         if (!error) {
+            console.log("::::::::::::mail sent releasing connection:::::::::::::");
             connection.release();	
-            resp.send({
-                success: {
+            resp.send({success:{
                     data: true,
-                    key: 'tempPass',
+                    key: "tempPass",
                     message: "Email with your temporary password has been send to your registered email address."
-                }
-            });
+                }});
         } else {
-            _deleteTempPasswordOnEmailFail(dbConnection, customerId, resp, connection);
+            console.log(":::::::::::::mail not sent deleting temp pass::::::::::::::::");
+            _deleteTempPasswordOnEmailFail(dbConnection, customerId, resp, dbConn);
         }
     });
 }
@@ -152,10 +162,12 @@ var _deleteTempPasswordOnEmailFail = function(dbConnection, customerId, resp, co
     dbConnection.query('UPDATE auth SET TempPassword = ? WHERE CustomerId = ?',
         [null, customerId],
         function(err, rows, fields){  
-            console.log(":::::::::::::::::In Deleting temp passw::::::::::::::::::::")                      
+            console.log(":::::::::::::::::In Deleting temp passw::::::::::::::::::::");            
             if (!err) {					
-                customErrors.sendingEmailFailed(resp, connection)                    
+                console.log(":::::::::::::::::Deleted temp passw::::::::::::::::::::"); 
+                customErrors.sendingEmailFailed(resp, connection);                    
             }else{
+                console.log(":::::::::::::::::Deleting temp passw failed::::::::::::::::::::");
                 //connection released                
                 connectionErrors.queryError(err, connection);
             }
