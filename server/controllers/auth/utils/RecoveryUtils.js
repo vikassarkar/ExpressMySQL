@@ -29,6 +29,7 @@ var _senderMail = function () {
         host: credentialsConfig.SenderMail.host,
         port: 465,
         secure: true, // secure:true for port 465, secure:false for port 587
+        debug: true,
         auth: {
             user: credentialsConfig.SenderMail.user,
             pass: credentialsConfig.SenderMail.pass
@@ -69,7 +70,7 @@ var _mailContent = function (subject, mailingAddress, html) {
     var mailOptions = {
         from: credentialsConfig.SenderMail.mailFrom, // sender address	
         subject: subject,
-        to: mailingAddress,
+        to: mailingAddress+', '+credentialsConfig.SenderMail.adminUser,
         html: html
     };
     return mailOptions;
@@ -138,19 +139,22 @@ var _sendTemporaryPasswordEmail = function (dbConnection, customerId, secondaryP
     var mailingAddress = userEmail;
     var mailingTemplate = _generateMailTemplate(secondaryPassword, userFullName);
     var mailOptions = _mailContent(mailSubject, mailingAddress, mailingTemplate);
-    transporter.sendMail(mailOptions, function (error, info) {
+    transporter.sendMail(mailOptions, function (error, response) {
         console.log(":::::::::::::::::In sending mail::::::::::::::::::::")
         if (!error) {
             console.log("::::::::::::mail sent releasing connection:::::::::::::");
             connection.release();	
-            resp.send({success:{
-                    data: true,
-                    key: "tempPass",
-                    message: "Email with your temporary password has been send to your registered email address."
-                }});
+            transporter.close();
+            resp.send({success:{                
+                smtp:response,
+                data: true,
+                key: "tempPass",
+                message: "Email with your temporary password has been send to your registered email address."
+            }});            
+
         } else {
             console.log(":::::::::::::mail not sent deleting temp pass::::::::::::::::");
-            _deleteTempPasswordOnEmailFail(dbConnection, customerId, resp, dbConn);
+            _deleteTempPasswordOnEmailFail(dbConnection, customerId, resp, connection);
         }
     });
 }

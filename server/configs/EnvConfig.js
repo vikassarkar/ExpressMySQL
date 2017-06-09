@@ -3,6 +3,6 @@ module.exports.envConfig = {
     'dbPort':'3306',
     'envport': '8080', //8080
     'env':'development', //'production'
-    'hashSaltRounds':10
-
+    'hashSaltRounds':10,
+    'serverHost':'localhost'//AWS
 };
