@@ -4,7 +4,7 @@ var recoveryModels = require('../../../models/auth/RecoveryModels'),
     connectionErrors = require('../../../utilities/ConnectionErrors'),
     customErrors = require('../../../utilities/CustomErrors'),
     recoveryEmails = require('../../../views/emailTemplates/ResetPassword'),
-    credentialsConfig = require('../../../configs/CredentialsConfig'),
+    credentialsConfig = require('../../../configs/CredentialsConfig'),  
     generator = require('generate-password'),
     async = require('async'),
     nodemailer = require('nodemailer');
@@ -19,6 +19,61 @@ var _generateSecondaryPassword = function () {
         numbers: true
     });
     return tempPass;
+}
+
+/**
+ * Create a new twilio REST API client to make authenticated requests against the
+ */
+var _senderMessage = function(){      
+	var smsClient = require('twilio')(credentialsConfig.SMSSender.twilioSID, credentialsConfig.SMSSender.twilioToken);
+    return smsClient;
+}
+
+/**
+ * generate sms Content
+ */
+var _generateSMSText = function(smsCode, tempPass){
+    var smsText;
+    switch (smsCode) {
+        case 'Recovery':
+            smsText = 'Hello this SMS is from Support Team.'+tempPass+' is your temp password. Please donot share it with any one.'
+            break;
+        default:
+            smsText = 'Support team !!!'
+            break;
+    }
+    return smsText;
+}
+
+/**
+ * message content
+ */
+var _messageContent = function(tempPass){
+    var messageOption = {
+        to:'+918830260616',
+        from:credentialsConfig.SMSSender.phoneNumber,
+        body: _generateSMSText('Recovery', tempPass)
+    }
+    return messageOption;
+}
+
+/**
+ * 
+ */
+var _sendSms = function(resp){
+    var TempPassword = _generateSecondaryPassword();
+    var messageOption = _messageContent(TempPassword);
+    var smsClient = _senderMessage();   
+
+    smsClient.api.messages.create(messageOption , function(error, message) {
+        if (!error) {
+            console.log(message);
+            resp.send("message sent")
+        } else {
+            console.log(error);
+            resp.send("error in mssg sending")
+        }
+    });
 }
 
 /**
@@ -180,5 +235,6 @@ var _deleteTempPasswordOnEmailFail = function(dbConnection, customerId, resp, co
 }
 module.exports = {
     'generateSecondaryPassword': _generateSecondaryPassword,
-    'confirmUserForEmail': _confirmUserForEmail
+    'confirmUserForEmail': _confirmUserForEmail,
+    'sendSms':_sendSms
 }

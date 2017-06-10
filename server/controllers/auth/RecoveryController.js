@@ -4,13 +4,7 @@ var connectionErrors = require('../../utilities/ConnectionErrors'),
 	customErrors = require('../../utilities/CustomErrors'),
 	recoveryUtils = require('./utils/RecoveryUtils'),
 	async = require('async');
-
-// create reusable transporter object using the default SMTP transport
-
-
-// setup email data with unicode symbols
-
-
+	
 module.exports = function (app, route, dbConnection) {
 
 	/**
@@ -78,7 +72,7 @@ module.exports = function (app, route, dbConnection) {
 										if (!err) {
 											console.log(':::::::::::::Temp Password Removed:::::::::::::');
 											console.log(rows);
-											resp.send('Temp saved')
+											resp.send('Temp deleted')
 
 										} else {
 											//connection released                
@@ -102,8 +96,13 @@ module.exports = function (app, route, dbConnection) {
 		});
 	});
 
-
-
+    /**
+     * Send message
+     */
+	app.get('/recovery/sendSMS', function (req, resp) {
+		console.log('in app get')
+		recoveryUtils.sendSms(resp);
+	});
 
 
     /**
