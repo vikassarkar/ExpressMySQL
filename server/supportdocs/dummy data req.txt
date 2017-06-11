@@ -1,6 +1,6 @@
 
 {
-    "UserEmail":"dwyne.johnson@gmail.com",
+    "UserEmail":"vikassarkar2289@gmail.com",
 	"UserName":"johnsondwyne",
 	"UserPassword":"Amdocs@1234",
 	"LastName":"johnson",
@@ -30,7 +30,7 @@
 	"Gender":"m"
 }
 {
-    "UserEmail":"rathore.pooja@gmail.com",
+    "UserEmail":"rathorepooja61@gmail.com",
 	"UserName":"rathorepooja",
 	"UserPassword":"Amdocs@1234", 
     "LastName":"Rathore",
@@ -45,7 +45,7 @@
 	"Gender":"f"
 }
 {
-    "UserEmail":"anders.maria@gmail.com",
+    "UserEmail":"vikas.sarkar2014@outlook.com",
 	"UserName":"anders.maria",
 	"UserPassword":"Amdocs@1234",
     "LastName":"Anders",
@@ -60,7 +60,7 @@
 	"Gender":"m" 
 }
 {
-    "UserEmail":"trujillo.ana@outlook.com",
+    "UserEmail":"vikas.sarkar2014@yahoo.com",
 	"UserName":"trujilloana",
 	"UserPassword":"Amdocs@1234",
     "LastName":"Trujillo",
@@ -75,7 +75,7 @@
 	"Gender":"m" 
 }
 {
-    "UserEmail":"moreno.antonio@gmail.com",
+    "UserEmail":"moreno.antonio__@gmail.com",
 	"UserName":"morenoantonio",
 	"UserPassword":"Amdocs@1234",
     "LastName":"Moreno",
@@ -90,7 +90,7 @@
 	"Gender":"m" 
 }
 {
-    "UserEmail":"hardy.thomas@.com",
+    "UserEmail":"hardy.thomas__@.com",
 	"UserName":"hardythomas",
 	"UserPassword":"Amdocs@1234",
     "LastName":"Hardy",
@@ -105,7 +105,7 @@
 	"Gender":"m"
 }
 {
-    "UserEmail":"berglund.christina@gmail.com",
+    "UserEmail":"berglund.christina__@gmail.com",
 	"UserName":"berglundchristina",
 	"UserPassword":"Amdocs@1234",
     "LastName":"Berglund",
