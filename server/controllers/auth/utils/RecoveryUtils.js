@@ -134,13 +134,15 @@ var _mailContent = function (subject, mailingAddress, html) {
 /**
  * query to map DOB and get user name from users table
  */
-var _confirmUserForEmail = function(dbConnection, userEmail, customerId, resp, connection){
+var _confirmUserForEmail = function(dbConnection, userEmail, customerId, reqData, resp, connection){
     dbConnection.query('SELECT * from users WHERE CustomerId=?',
         [customerId], 
         function(err, userDetails, fields){                        
             if (!err) {
                 console.log(':::::::::::::In users finding user:::::::::::::');
-                if(userDetails.length > 0){						
+                var DOBMatched = new Date(reqData.DateOfBirth).toDateString() == new Date(userDetails[0].DateOfBirth).toDateString();
+                console.log('::::::::Date of Birth Mached:::::::-'+DOBMatched);
+                if(userDetails.length > 0 && DOBMatched){						
                     console.log(':::::::::::::Got recovery user:::::::::::::');
                     var userFullName = userDetails[0].FirstName ? userDetails[0].FirstName : ""+" "+userDetails[0].LastName;
                     _saveTempPassword(dbConnection, userEmail, customerId, userFullName, resp, connection);
