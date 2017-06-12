@@ -12,6 +12,7 @@ CREATE TABLE auth (
     UserName varchar(255) NOT NULL,
     UserPassword varchar(255) NOT NULL,
     TempPassword varchar(255),
+    OldPasswords varchar(255),
     PRIMARY KEY (CustomerId),
     UNIQUE (UserEmail, UserName)
 );
@@ -54,7 +55,12 @@ WHERE CustomerId = 110;
 
 use pocdatabase;
 ALTER TABLE auth
-ADD TempPassword varchar(255);
+ADD OldPasswords varchar(255);
+
+use pocdatabase;
+UPDATE auth
+SET OldPasswords = '["$2a$10$66XOcD7zwxqHYrrf6ShhZewPfFWJfEx0xYT0gPK.BFHIhppamdSgC"]'
+WHERE CustomerId = 9;
 
 use pocdatabase;
 select * from auth;
