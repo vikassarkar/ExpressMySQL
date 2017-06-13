@@ -123,6 +123,24 @@ var _sendingEmailFailed = function(resp, connection){
         }
     });
 }
+
+/**
+ * handle error while user trying to reset password to 3 of its old password
+ */
+var _NewPasswordMatchedOld = function(resp, connection){
+    console.log(':::::::Error Password cannot be previous 3::::::::');
+    if(connection){
+        connection.release();
+    }
+    resp.status(404)
+    resp.send({ 
+        error: {
+            status: "404",                
+            message: "cannot be old password",
+            description: "New password cannot be same as old 3 passwords"
+        }
+    });
+}
 module.exports = {
     'modelMismatch': _modelMismatch,
     'userExist': _userExist,
@@ -130,5 +148,6 @@ module.exports = {
     'usernamePasswordMismatch':_usernamePasswordMismatch,
     'multipleUsers':_multipleUsers,
     'noDataFound': _noDataFound,
-    'sendingEmailFailed': _sendingEmailFailed
+    'sendingEmailFailed': _sendingEmailFailed,
+    'NewPasswordMatchedOld':_NewPasswordMatchedOld
 }

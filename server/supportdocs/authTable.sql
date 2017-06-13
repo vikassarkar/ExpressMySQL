@@ -59,7 +59,7 @@ ADD OldPasswords varchar(255);
 
 use pocdatabase;
 UPDATE auth
-SET OldPasswords = '["$2a$10$66XOcD7zwxqHYrrf6ShhZewPfFWJfEx0xYT0gPK.BFHIhppamdSgC"]'
+SET OldPasswords = '$2a$10$66XOcD7zwxqHYrrf6ShhZewPfFWJfEx0xYT0gPK.BFHIhppamdSgC___$2a$10$66XOcD7zwxqHYrrf6ShhZewPfFWJfEx0xYT0gPK.BFHIhppamdSgC'
 WHERE CustomerId = 9;
 
 use pocdatabase;
