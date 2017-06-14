@@ -8,7 +8,7 @@
 /**
  * set dynamic port ie tobe used in server heroku doesn't use forced port's 
  */
-var port = process.env.PORT ||'8010';
+var port = process.env.PORT ||'8080';
 
 /**
  * API configurations for local and server envirnoments
