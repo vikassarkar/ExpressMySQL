@@ -24,7 +24,8 @@ var authenticateModels = require('../../../models/auth/AuthenticateModels'),
  * @param {*} connection 
  */
 var authenticateUser = function(dbConnection, reqData, resp, connection){
-    var self = this;
+    var currentClass = this;
+    var privateMethod = {};
     this.dbConnection = dbConnection;
     this.reqData = reqData;        
     this.resp = resp;
@@ -33,74 +34,78 @@ var authenticateUser = function(dbConnection, reqData, resp, connection){
     this.userdetails = [];
 
     /**
+     * @privillidged method
      * initilize authenticateUser methods
      */
     this.execute = function(){       
-        this._getAuthUser();
+        privateMethod._getAuthUser();
     };
 
     /**
+     * @private method
      * query to get authdetails
      */
-    this._getAuthUser = function(){
+    privateMethod._getAuthUser = function(){
         dbConnection.query('SELECT * from auth WHERE UserEmail=? or UserName=?',
-        [self.reqData.UserEmail, self.reqData.UserName], 
+        [currentClass.reqData.UserEmail, currentClass.reqData.UserName], 
             function(err, authdetails, fields){				
                 if (!err) {
                     console.log(':::::::Got authdetails::::::::');
-                    self.authdetails = authdetails;
+                    currentClass.authdetails = authdetails;
                     //call to compare encrypted password
-                    self._compareUserCredentials();
+                    privateMethod._compareUserCredentials();
                 }else{                
-                    connectionErrors.queryError(err, self.connection);
+                    connectionErrors.queryError(err, currentClass.connection);
                 }
             }
         );
     };
 
     /**
+     * @private method
      * Compare hash password
      */
-    this._compareUserCredentials = function(){
-        if(self.authdetails.length == 1){
-            bcrypt.compare(self.reqData.UserPassword, self.authdetails[0].UserPassword).then(function(res) {
+    privateMethod._compareUserCredentials = function(){
+        if(currentClass.authdetails.length == 1){
+            bcrypt.compare(currentClass.reqData.UserPassword, currentClass.authdetails[0].UserPassword).then(function(res) {
                 if(res){
                     //call to get user details and return response                    
-                    self._getUserDetails()                    
+                    privateMethod._getUserDetails()                    
                 }else{
                     //connection released
-                    customErrors.usernamePasswordMismatch(self.resp, self.connection);
+                    privateMethod.customErrors.usernamePasswordMismatch(currentClass.resp, currentClass.connection);
                 }
             }, function(err){
                 //connection released
-                customErrors.cannotSaveUser(self.resp, self.connection);
+                customErrors.cannotSaveUser(currentClass.resp, currentClass.connection);
             });
         }else if(authdetails.length == 0){
                 //connection released
-                customErrors.usernamePasswordMismatch(self.resp, self.connection);
+                customErrors.usernamePasswordMismatch(currentClass.resp, currentClass.connection);
         }else{
             //connection released
-            customErrors.multipleUsers(self.resp, self.connection);
+            customErrors.multipleUsers(currentClass.resp, currentClass.connection);
         }
     };
 
     /**
+     * @private method
      * get users details to pass on authentication succesful
      */
-    this._getUserDetails = function(){
+    privateMethod._getUserDetails = function(){
         dbConnection.query('SELECT * from users WHERE CustomerId = ?',
-        [self.authdetails[0].CustomerId], 
+        [currentClass.authdetails[0].CustomerId], 
             function(err, userdetails, fields){            
                 if (!err) {
                     console.log('::::::::::::::::::User Loggedin::::::::::::::::::');
-                    self.userdetails = userdetails;
+                    currentClass.userdetails = userdetails;
                     var success = {
                         success:{
                                 data:true,
                                 userDetails:{                 
-                                    email:self.authdetails[0].UserEmail,
-                                    lastname: self.userdetails[0].LastName,
-                                    firstname: self.userdetails[0].FirstName
+                                    email:currentClass.authdetails[0].UserEmail,
+                                    lastname: currentClass.userdetails[0].LastName,
+                                    firstname: currentClass.userdetails[0].FirstName
                                 },              
                                 key:'Loggedin',
                                 message:"Users successfully loggedin"
@@ -111,19 +116,15 @@ var authenticateUser = function(dbConnection, reqData, resp, connection){
                     resp.send(success);
                 }else{
                     //connection released
-                    connectionErrors.queryError(err, self.connection);
+                    connectionErrors.queryError(err, currentClass.connection);
                 }
             }
         );
     };
-
-    /**
-     * hit initilize function
-     */
-    //this.execute();
 }
+
 /**
- * Export all exposable methods
+ * Export all exposable Class
  */
 module.exports = {    
     'authenticateUser' : authenticateUser,

@@ -36,7 +36,7 @@ module.exports = function(app, route, dbConnection){
 				connectionErrors.connectionError(err, connection);
 			}			
 			var reqData = req.body;
-			var authenticateUser = new authenticateUtils.authenticateUser(dbConnection, reqData, resp, connection);			
+			var authenticateUser = new authenticateUtils.authenticateUser(dbConnection, reqData, resp, connection);
 			authenticateUser.execute();
 		});
 	});
