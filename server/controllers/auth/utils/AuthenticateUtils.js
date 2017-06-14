@@ -35,7 +35,7 @@ var authenticateUser = function(dbConnection, reqData, resp, connection){
     /**
      * initilize authenticateUser methods
      */
-    this.initilize = function(){       
+    this.execute = function(){       
         this._getAuthUser();
     };
 
@@ -120,7 +120,7 @@ var authenticateUser = function(dbConnection, reqData, resp, connection){
     /**
      * hit initilize function
      */
-    this.initilize();
+    //this.execute();
 }
 /**
  * Export all exposable methods
