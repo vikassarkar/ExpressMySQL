@@ -1,10 +1,17 @@
 
 
 # node.js
-#
+# node modules not to upload on git
 node_modules/
 npm-debug.log
 yarn-error.log
 node_modules/
 
+# AWS RDS certificate not to upload on git
+rds-ca-2015-root
+
+# AWS RDS certificates not to upload on git
+config/
+
+# Credentials manager in local only not to share on git
 server/configs/CredentialsConfig.js
