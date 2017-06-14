@@ -109,17 +109,18 @@ var _bycryptAndSave = function(reqData, newCustomerId, dbConnection, connection,
 var _initilizeRegistration = function(hashPassword, newCustomerId, reqData, dbConnection, connection, resp){
     var queryData= {
         reqUsersQuery : {
-            CustomerId:newCustomerId,                                  
+            CustomerId:newCustomerId,            
+            UserEmail:reqData.UserEmail,                                  
             LastName:reqData.LastName,
             FirstName:reqData.FirstName,
+            DateOfBirth:reqData.DateOfBirth,
+            Gender:reqData.Gender,
             PhoneNumber:reqData.PhoneNumber,
+            AlternatePhoneNumber:reqData.AlternatePhoneNumber,
             Address:reqData.Address,
             City:reqData.City,
             PostalCode:reqData.PostalCode,
             Country:reqData.Country,
-            AlternatePhoneNumber:reqData.AlternatePhoneNumber,
-            DateOfBirth:reqData.DateOfBirth,
-            Gender:reqData.Gender,
             IsDeleted: false
         },
         reqAuthQuery : {
