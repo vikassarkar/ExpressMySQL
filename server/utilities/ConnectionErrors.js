@@ -1,4 +1,11 @@
 /**
+ * Created by - vikas
+ * date - 2107-06-15
+ */
+
+'use strict';
+
+/**
  * handle error while connection fails
  * @param {*} err 
  * @param {*} connection 

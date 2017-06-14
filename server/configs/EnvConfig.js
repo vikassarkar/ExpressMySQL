@@ -1,3 +1,10 @@
+/**
+ * Created by - vikas
+ * date - 2107-06-15
+ */
+
+'use strict';
+
 var port = process.env.PORT ||'8010';
 
 module.exports.envConfig = {
