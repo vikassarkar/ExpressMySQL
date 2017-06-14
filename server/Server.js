@@ -1,5 +1,17 @@
 'use strict';
 
+/**
+ * express - node module used for providing api interface b/w DB and UI
+ * router - express router to route in folders
+ * path - to provide absolute path
+ * logger - log all details
+ * cookieParser - parse cookie
+ * bodyParser - parse request and response for express api
+ *  _ - lodash used for utilities function
+ * dbConnection - connection for MYSQL DB
+ * envConfig - envirnoment required and configured variables
+ * app - basic express object to handle all urls
+ */
 var express = require('express'),
     router = express.Router(),
     path = require('path'),
@@ -19,12 +31,12 @@ module.exports = function() {
 	//app.use(express.static(path.join(__dirname, '../client')));
 
 	/**
-	 *use Logger
+	 * use Logger to log all details
 	 */
 	app.use(logger('dev'));
 
 	/**
-	 *use body parser
+	 * use body parser to parse request and response for express api
 	 */
 	app.use(bodyParser.json());
 	app.use(bodyParser.urlencoded({
@@ -32,7 +44,7 @@ module.exports = function() {
 	}));	
 	
 	/**
-	 *Define dynamic routes
+	 * Define dynamic routes to have septare controllers for seprate module
 	 */
 	var routes = require('./configs/ApiRouteConfig');
 	_.each(routes, function(controller, route) {
@@ -40,7 +52,7 @@ module.exports = function() {
 	});
 
 	/**
-	 *catch 404 and forward to error handler
+	 * catch 404 and forward to error handler
 	 */
 	app.use(function(req, res, next) {
 		var err = new Error('Not Found');
@@ -49,8 +61,8 @@ module.exports = function() {
 	});
 
 	/**
-     *development error handler
-	 *will print stacktrace
+     * development envirnoment error handler
+	 * will print stacktrace
 	 */
 	if (envConfig.env === 'development') {		
 		app.use(function(err, req, res, next) {
@@ -63,8 +75,8 @@ module.exports = function() {
 	}
 
 	/*
-	 *production error handler
-	 *no stacktraces leaked to user
+	 * production envirnoment error handler
+	 * no stacktraces leaked to user
 	 */
 	else if (envConfig.env === 'production') {		
 		app.use(function(err, req, res, next) {
@@ -76,5 +88,8 @@ module.exports = function() {
 		});
 	}
 
+	/**
+	 * return basic express object to handle all urls
+	 */
 	return app;
 };

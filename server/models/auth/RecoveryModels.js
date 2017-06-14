@@ -1,12 +1,15 @@
+/**
+ * Required and Type model for Recovery api
+ */
 module.exports = {
     'recoveryIsRequiredModel': {
-        "UserEmail": "required",
-        "UserName": "required",
+        "UserEmail": "required_1",
+        "UserName": "required_1",
         "DateOfBirth": "required"
     },
     'recoveryTypeModel': {
-        "UserEmail": "string",
-        "UserName": "string",
-        "DateOfBirth": "string"
+        "UserEmail": String,
+        "UserName": String,
+        "DateOfBirth": Date
     }
 }

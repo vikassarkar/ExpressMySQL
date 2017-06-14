@@ -15,3 +15,6 @@ config/
 
 # Credentials manager in local only not to share on git
 server/configs/CredentialsConfig.js
+
+#SQL Queries not to upload in git
+server/supportdocs/sqlqueries/

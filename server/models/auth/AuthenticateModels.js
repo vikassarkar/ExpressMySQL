@@ -1,12 +1,15 @@
+/**
+ * Required and Type model for Login authentication api
+ */
 module.exports = {
     'signinIsRequiredModel': {
-        "UserEmail": "required",
-        "UserName": "required",
+        "UserEmail": "required_1",
+        "UserName": "required_1",
         "UserPassword": "required"
     },
     'signinTypeModel': {
-        "UserEmail": "string",
-        "UserName": "string",
-        "UserPassword": "string"
+        "UserEmail": String,
+        "UserName": String,
+        "UserPassword": String
     }
 }

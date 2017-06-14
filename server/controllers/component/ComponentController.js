@@ -2,20 +2,17 @@
 
 module.exports = function(app, route) {
 
-    app.get('/component', function(req, res) {
-        resp.send('<h1 style="color:green">get/component/</h1>')
-    });
-
-    app.post('/component', function(req, res) {
-        resp.send('<h1 style="color:green">post/component/</h1>')
-    });
-
+    /**
+     * Backup API if API doesn't exist at all
+	 * @req - request params for api
+	 * @resp - response tobe send
+     */
     app.delete('/component/:id', function(req, res) {
-        resp.send('<h1 style="color:green">delete/component/'+req.params.id+'/</h1>')
+        res.send(req.params.id + '- Request you are looking for is Not available');
     });
 
-    /*
-     **Return middleware.
+    /**
+     * Return middleware.
      */
     return function(req, res, next) {
         next();

@@ -5,13 +5,14 @@
  * Base server file to load all API's
  * @envConfig - projects base configuration
  * @app - projects all api routing and base code setup
+ * @credentialsConfig - all credentials manager
  */
 var envConfig = require('./server/configs/EnvConfig').envConfig,
     app = require('./server/Server')(),
     credentialsConfig = require('./server/configs/CredentialsConfig');
 
 /**
- * Setting port
+ * Setting port from envConfig port value
  */
 app.set('port', (process.env.PORT, envConfig.envport))
 

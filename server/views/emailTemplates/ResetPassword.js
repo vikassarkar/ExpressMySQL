@@ -1,4 +1,11 @@
 
+'use strict';
+
+/**
+ * Email template for recovery password
+ * @param {*} temporaryPassword 
+ * @param {*} userFullName 
+ */
 var _resetEmailFormat = function (temporaryPassword, userFullName) {
     var resetEmailTemplate = '   <body style="font-family:Arial, Helvetica, sans-serif; margin:0; padding:0; background-color:#ffffff">  ' +
         '     <center style="border:1px solid #cccccc;">  ' +
@@ -148,6 +155,10 @@ var _resetEmailFormat = function (temporaryPassword, userFullName) {
         '  </body>  ';
     return resetEmailTemplate;
 }
+
+/**
+ * Export Exposable methods
+ */
 module.exports = {
     'resetEmailFormat': _resetEmailFormat
 }

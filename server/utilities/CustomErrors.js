@@ -1,5 +1,7 @@
 /**
  * handle error when model of request mismatches with recived request
+ * @param {*} resp 
+ * @param {*} connection 
  */
 var _modelMismatch = function(resp, connection){
     console.log('::::::::::::Error Bad request or Request mismatch::::::::::::');
@@ -18,6 +20,8 @@ var _modelMismatch = function(resp, connection){
 
 /**
  * handle error if user already exist in DB
+ * @param {*} resp 
+ * @param {*} connection 
  */
 var _userExist = function(resp, connection){
     console.log('::::::::::Error user already exist::::::::::');
@@ -36,6 +40,8 @@ var _userExist = function(resp, connection){
 
 /**
  * Handle error if saving data in any of DB fails
+ * @param {*} resp 
+ * @param {*} connection 
  */
 var _cannotSaveUser = function(resp, connection){
     console.log('::::::::::::::Error Internal Server Error::::::::::::::');
@@ -54,6 +60,8 @@ var _cannotSaveUser = function(resp, connection){
 
 /**
  * Handle error if username/useremail and password mismatches
+ * @param {*} resp 
+ * @param {*} connection 
  */
 var _usernamePasswordMismatch = function(resp, connection){
     console.log('::::::::::Error multiple users for this login::::::::::');
@@ -71,7 +79,9 @@ var _usernamePasswordMismatch = function(resp, connection){
 }
 
 /**
- *Handle error if multiple user details exist whie logging in
+ * Handle error if multiple user details exist whie logging in
+ * @param {*} resp 
+ * @param {*} connection 
  */
 var _multipleUsers = function(resp, connection){
     console.log('::::::::::Error multiple users for this login::::::::::');
@@ -90,6 +100,8 @@ var _multipleUsers = function(resp, connection){
 
 /**
  * Handle no data error condition 
+ * @param {*} resp 
+ * @param {*} connection 
  */
 var _noDataFound = function(resp, connection){
     console.log('::::::::::Error no related data found::::::::::');
@@ -108,6 +120,8 @@ var _noDataFound = function(resp, connection){
 
 /**
  * email sending failed to user
+ * @param {*} resp 
+ * @param {*} connection 
  */
 var _sendingEmailFailed = function(resp, connection){
     console.log('::::::::::Error email not send::::::::::');
@@ -126,6 +140,8 @@ var _sendingEmailFailed = function(resp, connection){
 
 /**
  * handle error while user trying to reset password to 3 of its old password
+ * @param {*} resp 
+ * @param {*} connection 
  */
 var _NewPasswordMatchedOld = function(resp, connection){
     console.log(':::::::Error Password cannot be previous 3::::::::');
@@ -141,6 +157,10 @@ var _NewPasswordMatchedOld = function(resp, connection){
         }
     });
 }
+
+/**
+ * Export all exposable methods
+ */
 module.exports = {
     'modelMismatch': _modelMismatch,
     'userExist': _userExist,

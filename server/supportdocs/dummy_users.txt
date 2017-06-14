@@ -5,14 +5,14 @@
 	"UserPassword":"Amdocs@1234",
 	"LastName":"johnson",
 	"FirstName":"",
-	"PhoneNumber":"91-9714091047",
+	"DateOfBirth":"1967-08-21",
+	"Gender":"m",
+	"PhoneNumber":"+91-9714091047",
+	"AlternatePhoneNumber":"",
 	"Address":"",
 	"City":"Los angeles",
 	"PostalCode":"102020",
-	"Country":"USA",
-	"AlternatePhoneNumber":"",
-	"DateOfBirth":"1967-08-21",
-	"Gender":"m"
+	"Country":"USA"
 }
 {
     "UserEmail":"vikas.sarkar@amdocs.com",
@@ -20,29 +20,29 @@
 	"UserPassword":"Amdocs@1234",
     "LastName":"Sarkar",
 	"FirstName":"Vikas",
-	"PhoneNumber":"91-9405728836",
+	"DateOfBirth":"1989-05-22",
+	"Gender":"m",
+	"PhoneNumber":"+91-8087466760",
+	"AlternatePhoneNumber":null,
 	"Address":"alcon silverlleaf keshavnagar",
 	"City":"Pune",
 	"PostalCode":"411013",
-	"Country":"India",
-	"AlternatePhoneNumber":null,
-	"DateOfBirth":"1960-01-02",
-	"Gender":"m"
+	"Country":"India"
 }
 {
     "UserEmail":"rathorepooja61@gmail.com",
-	"UserName":"rathorepooja",
+	"UserName":"rathore.pooja",
 	"UserPassword":"Amdocs@1234", 
     "LastName":"Rathore",
 	"FirstName":"Pooja",
-	"PhoneNumber":"91-7276220320",
+	"DateOfBirth":"1990-08-22",
+	"Gender":"f",
+	"PhoneNumber":"+91-7709308837",
+	"AlternatePhoneNumber":null,
 	"Address":"Pleasent park fatimanagar",
 	"City":"Pune",
 	"PostalCode":"411023",
-	"Country":"India",
-	"AlternatePhoneNumber":null,
-	"DateOfBirth":"1960-01-02",
-	"Gender":"f"
+	"Country":"India"
 }
 {
     "UserEmail":"vikas.sarkar2014@outlook.com",
@@ -50,87 +50,87 @@
 	"UserPassword":"Amdocs@1234",
     "LastName":"Anders",
 	"FirstName":"Maria",
-	"PhoneNumber":"045-5512345678",
+	"DateOfBirth":"1960-01-01",
+	"Gender":"f", 
+	"PhoneNumber":"+45-5512345678",
+	"AlternatePhoneNumber":null,
 	"Address":"Obere Str. 57",
 	"City":"PuBerlinne",
 	"PostalCode":"12209",
-	"Country":"Germany",
-	"AlternatePhoneNumber":null,
-	"DateOfBirth":"1960-01-02",
-	"Gender":"m" 
+	"Country":"Germany"
 }
 {
     "UserEmail":"vikas.sarkar2014@yahoo.com",
-	"UserName":"trujilloana",
+	"UserName":"trujillo.ana",
 	"UserPassword":"Amdocs@1234",
     "LastName":"Trujillo",
 	"FirstName":"Ana",
-	"PhoneNumber":"044-5512345678",
+	"DateOfBirth":"1960-01-02",
+	"Gender":"f", 
+	"PhoneNumber":"+44-5512345678",
+	"AlternatePhoneNumber":null,
 	"Address":"Avda. de la Constitución 2222",
 	"City":"México D.F.",
 	"PostalCode":"05021",
-	"Country":"Mexico",
-	"AlternatePhoneNumber":null,
-	"DateOfBirth":"1960-01-02",
-	"Gender":"m" 
+	"Country":"Mexico"
 }
 {
     "UserEmail":"moreno.antonio__@gmail.com",
-	"UserName":"morenoantonio",
+	"UserName":"moreno.antonio",
 	"UserPassword":"Amdocs@1234",
     "LastName":"Moreno",
 	"FirstName":"Antonio",
-	"PhoneNumber":"044-5512345689",
+	"DateOfBirth":"1960-01-03",
+	"Gender":"m",
+	"PhoneNumber":"+44-5512345689",
+	"AlternatePhoneNumber":null,
 	"Address":"Mataderos 2312",
 	"City":"México D.F.",
 	"PostalCode":"05023",
-	"Country":"Mexico",
-	"AlternatePhoneNumber":null,
-	"DateOfBirth":"1960-01-02",
-	"Gender":"m" 
+	"Country":"Mexico"
 }
 {
-    "UserEmail":"hardy.thomas__@.com",
-	"UserName":"hardythomas",
+    "UserEmail":"hardy.thomas__@zoho.com",
+	"UserName":"hardy.thomas",
 	"UserPassword":"Amdocs@1234",
     "LastName":"Hardy",
 	"FirstName":"Thomas",
-	"PhoneNumber":"44-7700900077",
+	"DateOfBirth":"1960-01-04",
+	"Gender":"m",
+	"PhoneNumber":"+44-7700900077",
+	"AlternatePhoneNumber":null,
 	"Address":"120 Hanover Sq.",
 	"City":"London",
 	"PostalCode":"WA1 1DP",
-	"Country":"UK",
-	"AlternatePhoneNumber":null,
-	"DateOfBirth":"1960-01-02",
-	"Gender":"m"
+	"Country":"UK"
 }
 {
     "UserEmail":"berglund.christina__@gmail.com",
-	"UserName":"berglundchristina",
+	"UserName":"berglund.christina",
 	"UserPassword":"Amdocs@1234",
     "LastName":"Berglund",
 	"FirstName":"Christina",
-	"PhoneNumber":"46-77179333",
+	"DateOfBirth":"1960-01-05",
+	"Gender":"f",
+	"PhoneNumber":"+46-77179333",
+	"AlternatePhoneNumber":null,
 	"Address":"Berguvsvägen 8",
 	"City":"Luleå",
 	"PostalCode":"S-958 22",
-	"Country":"Sweden",
-	"AlternatePhoneNumber":null,
-	"DateOfBirth":"1960-01-02",
-	"Gender":"m"
+	"Country":"Sweden"
 }
 {
     "UserEmail":"vikas.sarkar2014@gmail.com",
-	"UserName":"vikasjadav",
+	"UserName":"jadav.vikas",
 	"UserPassword":"Amdocs@1234",    
     "LastName":"Jadev",
 	"FirstName":"Vikas",
-	"PhoneNumber":"91-9943564321",
+	"DateOfBirth":"1989-01-01",
+	"Gender":"m", 
+	"PhoneNumber":"+91-8830260616",
+	"AlternatePhoneNumber":null,
 	"Address":"mahavir nagar",
 	"City":"Indore",
 	"PostalCode":"421031",
-	"Country":"India",
-	"AlternatePhoneNumber":null,
-	"DateOfBirth":"1960-01-02",
-	"Gender":"m" 
+	"Country":"India"
 }

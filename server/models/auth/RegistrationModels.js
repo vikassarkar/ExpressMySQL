@@ -1,3 +1,6 @@
+/**
+ * Required and Type model for Registeration api
+ */
 module.exports = {
     'signupIsRequiredModel': {
         "UserEmail": "required",
@@ -14,17 +17,17 @@ module.exports = {
         "DateOfBirth": "required"
     },
     'signupTypeModel': {
-        "UserEmail": "string",
-        "UserName": "string",
-        "UserPassword": "string",
-        "LastName": "string",
-        "FirstName": "string",
-        "PhoneNumber": "string",
-        "Adress": "string",
-        "City": "string",
-        "PostalCode": "string",
-        "Country": "string",
-        "AlternatePhoneNumber": "string",
-        "DateOfBirth": "date"
+        "UserEmail": String,
+        "UserName": String,
+        "UserPassword": String,
+        "LastName": String,
+        "FirstName": String,
+        "PhoneNumber": String,
+        "Adress": String,
+        "City": String,
+        "PostalCode": String,
+        "Country": String,
+        "AlternatePhoneNumber": String,
+        "DateOfBirth": Date
     }
 }

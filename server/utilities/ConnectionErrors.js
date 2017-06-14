@@ -1,5 +1,7 @@
 /**
  * handle error while connection fails
+ * @param {*} err 
+ * @param {*} connection 
  */
 var _connectionError = function(err, connection){
     console.log(':::::::::Error in mysql pool connection:::::::::::');
@@ -16,6 +18,8 @@ var _connectionError = function(err, connection){
 
 /**
  * handle query failing error
+ * @param {*} err 
+ * @param {*} connection 
  */
 var _queryError = function(err, connection){
     console.log('::::::::::::::::::Error in query::::::::::::::::::');
@@ -32,6 +36,9 @@ var _queryError = function(err, connection){
     });
 }
 
+/**
+ * Export Exposable methods only
+ */
 module.exports = {
     'connectionError': _connectionError,
     'queryError': _queryError

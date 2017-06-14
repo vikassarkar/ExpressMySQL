@@ -1,11 +1,16 @@
 'use strict';
 
+/**
+ * @connectionErrors - to handle DB connection error
+ */
 var connectionErrors = require('../../utilities/ConnectionErrors');
 
 module.exports = function(app, route, dbConnection) {
 
 	/**
 	 * test api to check if URL for API's are working
+	 * @req - request params for api
+	 * @resp - response tobe send
 	 */
 	app.get('/home/init', function (req, resp) {
 		resp.send('<h1 style="color:green">Node hosted sucessfully</h1><p>you can now jump to API.</p>');
@@ -13,6 +18,8 @@ module.exports = function(app, route, dbConnection) {
 
 	/**
 	 * get all users in data
+	 * @req - request params for api
+	 * @resp - response tobe send
 	 */
 	app.get('/home/getAllUsers', function (req, resp) {
 		dbConnection.getConnection(function (err, connection) {
@@ -34,7 +41,11 @@ module.exports = function(app, route, dbConnection) {
 
 	/**
 	 * get users row based on req query
-	 * @FirstName: first name of user
+	 * @req - request params for api
+	 * @resp - response tobe send
+	 * @req param {* ||} FirstName 
+ 	 * @req param {* ||} LastName 
+ 	 * @req param {* ||} UserEmail  ///// code to be updated
 	 */
 	app.post('/home/getSpecificUser', function(req, resp) {
 		dbConnection.getConnection(function (err, connection) {
@@ -43,8 +54,8 @@ module.exports = function(app, route, dbConnection) {
 				connectionErrors.connectionError(err, connection);
 			}			
 			var reqData = req.body;
-			dbConnection.query('SELECT * from users WHERE FirstName=?',
-			[reqData.FirstName], 
+			dbConnection.query('SELECT * from users WHERE FirstName=? || LastName=?',
+			[reqData.FirstName, reqData.LastName], 
 				function(err, rows, fields){
 					connection.release();
 					if (!err) {
@@ -59,14 +70,16 @@ module.exports = function(app, route, dbConnection) {
 
 	/**
      * Backup API if API doesn't exist at all
+	 * @req - request params for api
+	 * @resp - response tobe send
      */
 	app.get('/home/:id', function(req, res) {
-		res.send('respond with a home data with id - '+ req.params.id);
+		res.send(req.params.id + '- Request you are looking for is Not available');
 	});
 
-	/*
-	**Return middleware.
-	*/
+	/**
+	 * Return middleware.
+	 */
 	return function(req, res, next) {
 		next();
 	};
