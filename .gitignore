@@ -8,7 +8,7 @@ yarn-error.log
 node_modules/
 
 # AWS RDS certificate not to upload on git
-rds-ca-2015-root
+rds-ca-2015-root.pem
 
 # AWS RDS certificates not to upload on git
 config/
