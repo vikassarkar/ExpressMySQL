@@ -5,6 +5,10 @@
 
 'use strict';
 
+/**
+ * DB configurations for local and server envirnoments
+ * @define all connections variables
+ */
 var mysql = require('mysql'),
     envConfig = require('./EnvConfig').envConfig,
     credentialsConfig = require('./CredentialsConfig'),
@@ -35,6 +39,9 @@ var mysql = require('mysql'),
         }
     };
 
-    module.exports = {    
-        'dbConnection': mysql.createPool(dbConfig[envConfig.db])
-    };
+/**
+ * expose dbconnection for curd operations by EXS API's
+ */
+module.exports = {    
+    'dbConnection': mysql.createPool(dbConfig[envConfig.db])
+};

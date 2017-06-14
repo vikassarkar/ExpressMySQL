@@ -5,6 +5,15 @@
 
 'use strict';
 
+/**
+ * contents for response configs
+ * @define all contents in different languages for EXS
+ */
 module.exports = {
-    "mailContent_header":""
+    "eng":{
+        "mailContent_header":""
+    },
+    "frn":{
+        "mailContent_header":""
+    }
 };

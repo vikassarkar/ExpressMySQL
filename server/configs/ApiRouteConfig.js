@@ -5,6 +5,10 @@
 
 'use strict';
 
+/**
+ * api controllers router file
+ * @define all routing configurations here
+ */
 module.exports = {
   '/login': require('../controllers/auth/AuthenticateController'),
   '/register': require('../controllers/auth/RegistrationController'),
