@@ -6,6 +6,7 @@
 'use strict';
 
 /**
+ * Login handler and curd operations 
  * @authenticateModels - request model for "/login/auth" 
  * @connectionErrors - generic db connection errors handler
  * @customErrors - generic custom errors handler
@@ -43,6 +44,7 @@ var authenticateUser = function(dbConnection, reqData, resp, connection){
 
     /**
      * @private method
+     * @DBQuery
      * query to get authdetails
      */
     privateMethod._getAuthUser = function(){
@@ -90,6 +92,7 @@ var authenticateUser = function(dbConnection, reqData, resp, connection){
 
     /**
      * @private method
+     * @DBQuery
      * get users details to pass on authentication succesful
      */
     privateMethod._getUserDetails = function(){
@@ -105,7 +108,8 @@ var authenticateUser = function(dbConnection, reqData, resp, connection){
                                 userDetails:{                 
                                     email:currentClass.authdetails[0].UserEmail,
                                     lastname: currentClass.userdetails[0].LastName,
-                                    firstname: currentClass.userdetails[0].FirstName
+                                    firstname: currentClass.userdetails[0].FirstName,
+                                    CustomerId: currentClass.authdetails[0].CustomerId
                                 },              
                                 key:'Loggedin',
                                 message:"Users successfully loggedin"

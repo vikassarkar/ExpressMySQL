@@ -7,16 +7,17 @@
 'use strict';
 
 /**
- * express - node module used for providing api interface b/w DB and UI
- * router - express router to route in folders
- * path - to provide absolute path
- * logger - log all details
- * cookieParser - parse cookie
- * bodyParser - parse request and response for express api
- *  _ - lodash used for utilities function
- * dbConnection - connection for MYSQL DB
- * envConfig - envirnoment required and configured variables
- * app - basic express object to handle all urls
+ * Main js file to handle aplication routing and errors 
+ * @express - node module used for providing api interface b/w DB and UI
+ * @router - express router to route in folders
+ * @path - to provide absolute path
+ * @logger - log all details
+ * @cookieParser - parse cookie
+ * @bodyParser - parse request and response for express api
+ * @_ - lodash used for utilities function
+ * @dbConnection - connection for MYSQL DB
+ * @envConfig - envirnoment required and configured variables
+ * @app - basic express object to handle all urls
  */
 var express = require('express'),
     router = express.Router(),

@@ -6,7 +6,8 @@
 'use strict';
 
 /**
- * @connectionErrors - to handle DB connection error
+ * Login api url handler
+ * @connectionErrors - generic db connection errors handler
  * @authenticateUtils - authentication utility functions for all data manupulation and curd operations
  */
 var connectionErrors = require('../../utilities/ConnectionErrors'),
@@ -25,9 +26,9 @@ module.exports = function(app, route, dbConnection){
 	 * Logging in with provided params
 	 * @req - request params for api
 	 * @resp - response tobe send
-	 * @req param {* ||} UserEmail: provided usremail
-	 * @req param {* ||} UserName: provided username
-	 * @req param {*} UserPassword: provided password
+	 * @req param {* ||} UserEmail: provided String param for usremail
+	 * @req param {* ||} UserName: provided String param for username
+	 * @req param {*} UserPassword: provided String param for password
 	 */
 	app.post('/login/auth', function (req, resp) {
         dbConnection.getConnection(function (err, connection) {

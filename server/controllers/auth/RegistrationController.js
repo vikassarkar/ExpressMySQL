@@ -5,10 +5,16 @@
 
 'use strict';
 
+
+/**
+ * Registration api url handler
+ * @connectionErrors - generic db connection errors handler
+ * @customErrors - generic custom errors handler
+ * @registrationUtils - registration utility functions for all data manupulation and curd operations
+ */
 var connectionErrors = require('../../utilities/ConnectionErrors'),
     customErrors = require('../../utilities/CustomErrors'),
-    registrationUtils = require('./utils/RegistrationUtils'),
-    async = require('async');
+    registrationUtils = require('./utils/RegistrationUtils');
 
 module.exports = function(app, route, dbConnection){
 
@@ -20,69 +26,58 @@ module.exports = function(app, route, dbConnection){
 	});
 
 	/**
-	 * get users row based on req query
-     * auth table
-     * @UserEmail varchar(255) NOT NULL ,
-     * @UserName varchar(255) NOT NULL,
-     * @UserPassword varchar(255) NOT NULL,
-     * 
-     * user table
-     * @LastName varchar(255) NOT NULL,
-     * @FirstName varchar(255),
-     * @PhoneNumber varchar(14) NOT NULL,
-     * @Adress varchar(255),
-     * @City varchar(255) NOT NULL,
-     * @PostalCode varchar(50) NOT NULL,
-     * @Country varchar(255) NOT NULL,
-     * @AlternatePhoneNumber varchar(14),
-     * @DateOfBirth date,
-     * 
-     * @CustomerId int NOT NULL,
-     *
-     * &PRIMARY KEY (CustomerId)
-     * &UNIQUE (UserEmail, UserName)
+	 * Register user in with provided params
+	 * @req - request params for api
+	 * @resp - response tobe send
+	 * @req param {*} UserEmail: provided String param for usremail
+	 * @req param {*} UserName: provided String param for username
+	 * @req param {*} UserPassword: provided String param for password
+	 * @req param {*} LastName: provided String param for Last name
+	 * @req param {}  FirstName: provided String param for First name
+	 * @req param {}  DateOfBirth: provided Date param for date of birth
+	 * @req param {*} Gender: provided String param for gender
+	 * @req param {*} PhoneNumber: provided String param for contact number
+	 * @req param {*} AlternatePhoneNumber: provided String param for alternate contact number
+	 * @req param {}  Address: provided String param for  Residential address
+	 * @req param {*} City: provided String param for city
+	 * @req param {*} PostalCode: provided String param for  postal code
+	 * @req param {*} Country: provided String param for country
+	 * @req param {} IsDeleted: provided Boolean param that this user is deleted or existing
 	 */
 	app.post('/register/addNewUser', function(req, resp) {
 		dbConnection.getConnection(function (err, connection) {
-			console.log(':::::::::::in mysql pool connection:::::::::::::');
+			console.log(':::::in mysql pool connection:::::::');
 			if (err) {
                 //connection released
 				connectionErrors.connectionError(err, connection);
-			}	
-            var dbConn = connection;		
-			var reqData = registrationUtils.nullifyAllEmptyProperties(req.body);
-            var validData = registrationUtils.validateRegistrationRequest(reqData);
-            //get last row and get its CustomerId to generate CustomerId
-            dbConnection.query('SELECT * FROM auth ORDER BY CustomerId DESC LIMIT 1', 
-                function (err, rows) {
-                    if (!err) {
-                        console.log('::::::::::::::::::Got data last row::::::::::::::::::::');
-                        if(rows.length > 0){
-                            var stringRow = JSON.stringify(rows);
-                            var jsonRow =  JSON.parse(stringRow);
-                            var newCustomerId = jsonRow[0].CustomerId+1;
-                        }else{
-                            var newCustomerId = 1000;
-                        }
-                        registrationUtils.registerUserInit(newCustomerId, validData, dbConnection, reqData, connection, resp);
-                    }else{                
-                        connectionErrors.queryError(err, dbConn);
-                    }
-                });            
+			}else{
+                var reqData = req.body;
+                var registerUser = new registrationUtils.registerUser(dbConnection, reqData, resp, connection)	
+                var reqData = registerUser.nullifyAllEmptyProperties();
+                var validData = registerUser.verifyModelSchema();                
+                if(validData){
+                    registerUser.execute();  
+                }else{
+                    //connection released
+                    customErrors.modelMismatch(resp, connection)
+                }
+            }
 		});
 	});
 
 
-    /**
+	/**
      * Backup API if API doesn't exist at all
+	 * @req - request params for api
+	 * @resp - response tobe send
      */
 	app.get('/register/:id', function(req, res) {
 		res.send('respond with a home data with id - '+ req.params.id);
 	});    
     
-	/*
-     **Return middleware.
-     */
+	/**
+	 * Return middleware.
+	 */
     return function(req, res, next) {
         next();
     };
