@@ -1,8 +1,10 @@
+var port = process.env.PORT ||'8010';
+
 module.exports.envConfig = {
     'db':'LocalPoolConnection',//EC2PoolConnection
     'dbPort':'3306',
-    'envport': '8080', //8080
+    'envport': port,
     'env':'development', //'production'
     'hashSaltRounds':10,
-    'serverHost':'localhost'//AWS
+    'serverHost':'localhost'//, heroku, AWS
 };
