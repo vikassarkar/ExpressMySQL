@@ -5,243 +5,324 @@
 
 'use strict';
 
+/**
+ * Recovery handler and curd operations 
+ * @recoveryModels - request model for "/login/auth" 
+ * @connectionErrors - generic db connection errors handler
+ * @customErrors - generic custom errors handler
+ * @recoveryEmails - html template tobe send to email
+ * @credentialsConfig - all server/DB/email/messiging credentials
+ * @generator - random unique temporary password generator node module
+ * @nodemailer -  mailing node module
+ */
 var recoveryModels = require('../../../models/auth/RecoveryModels'),
     connectionErrors = require('../../../utilities/ConnectionErrors'),
     customErrors = require('../../../utilities/CustomErrors'),
     recoveryEmails = require('../../../views/emailTemplates/ResetPassword'),
     credentialsConfig = require('../../../configs/CredentialsConfig'),  
     generator = require('generate-password'),
-    async = require('async'),
     nodemailer = require('nodemailer');
 
-
 /**
- * generate temporary password
+ * Class for authenticating user, code needs to be connected before calling it
+ * @param {*} dbConnection 
+ * @param {*} reqData 
+ * @param {*} resp 
+ * @param {*} connection 
  */
-var _generateSecondaryPassword = function () {
-    var tempPass = generator.generate({
-        length: 10,
-        numbers: true
-    });
-    return tempPass;
-}
+var emailTemporaryPassword = function(dbConnection, reqData, resp, connection){
+    var currentClass = this;
+    var privateMethod = {};
+    this.dbConnection = dbConnection;
+    this.reqData = reqData;        
+    this.resp = resp;
+    this.connection = connection;
+    this.tempPassword = '';
+    this.userFullName = '';
+    this.authdetails = [];
+    this.userdetails = [];
 
-/**
- * Create a new twilio REST API client to make authenticated requests against the
- */
-var _senderMessage = function(){      
-	var smsClient = require('twilio')(credentialsConfig.SMSSender.twilioSID, credentialsConfig.SMSSender.twilioToken);
-    return smsClient;
-}
-
-/**
- * generate sms Content
- */
-var _generateSMSText = function(smsCode, tempPass){
-    var smsText;
-    switch (smsCode) {
-        case 'Recovery':
-            smsText = 'Hello this SMS is from Support Team.'+tempPass+' is your temp password. Please donot share it with any one.'
-            break;
-        default:
-            smsText = 'Support team !!!'
-            break;
-    }
-    return smsText;
-}
-
-/**
- * message content
- */
-var _messageContent = function(tempPass){
-    var messageOption = {
-        to:'+918830260616',
-        from:credentialsConfig.SMSSender.phoneNumber,
-        body: _generateSMSText('Recovery', tempPass)
-    }
-    return messageOption;
-}
-
-/**
- * 
- */
-var _sendSms = function(resp){
-    var TempPassword = _generateSecondaryPassword();
-    var messageOption = _messageContent(TempPassword);
-    var smsClient = _senderMessage();   
-
-    smsClient.api.messages.create(messageOption , function(error, message) {
-        if (!error) {
-            console.log(message);
-            resp.send("message sent")
-        } else {
-            console.log(error);
-            resp.send("error in mssg sending")
-        }
-    });
-}
-
-/**
- * configure sender mail
- */
-var _senderMail = function () {
-    var transporter = nodemailer.createTransport({
-        host: credentialsConfig.SenderMail.host,
-        port: 465,
-        secure: true, // secure:true for port 465, secure:false for port 587
-        debug: true,
-        auth: {
-            user: credentialsConfig.SenderMail.user,
-            pass: credentialsConfig.SenderMail.pass
-        }
-    });
-    return transporter;
-}
-
-/**
- * generate subject of mail
- */
-var _generateMailSubject = function (mailCode) {
-    var emailSub;
-    switch (mailCode) {
-        case 'Recovery':
-            emailSub = 'Test - Your Temporary password'
-            break;
-        default:
-            emailSub = 'Support team !!!'
-            break;
-    }
-    return emailSub;
-}
-
-/**
- * generate email template
- */
-var _generateMailTemplate = function (secondaryPassword, userFullName) {
-    console.log(userFullName)
-    var template =  recoveryEmails.resetEmailFormat(secondaryPassword, userFullName)
-    return template;
-}
-
-/**
- * setup mail content to be send 
- */
-var _mailContent = function (subject, mailingAddress, html) {
-    var mailOptions = {
-        from: credentialsConfig.SenderMail.mailFrom, // sender address	
-        subject: subject,
-        to: mailingAddress+', '+credentialsConfig.SenderMail.adminUser,
-        html: html
+    /**
+     * @privillidged method
+     * initilize authenticateUser methods
+     */
+    this.execute = function(){       
+        privateMethod._getAuthUser();
     };
-    return mailOptions;
-}
 
-/**
- * query to map DOB and get user name from users table
- */
-var _confirmUserForEmail = function(dbConnection, userEmail, customerId, reqData, resp, connection){
-    dbConnection.query('SELECT * from users WHERE CustomerId=?',
-        [customerId], 
-        function(err, userDetails, fields){                        
-            if (!err) {
-                console.log(':::::::::::::In users finding user:::::::::::::');
-                var DOBMatched = new Date(reqData.DateOfBirth).toDateString() == new Date(userDetails[0].DateOfBirth).toDateString();
-                console.log('::::::::Date of Birth Mached:::::::-'+DOBMatched);
-                if(userDetails.length > 0 && DOBMatched){						
-                    console.log(':::::::::::::Got recovery user:::::::::::::');
-                    var userFullName = userDetails[0].FirstName ? userDetails[0].FirstName : ""+" "+userDetails[0].LastName;
-                    _saveTempPassword(dbConnection, userEmail, customerId, userFullName, resp, connection);
-                }else{
-                    console.log(':::::::::::::no user found:::::::::::::');
-                    customErrors.noDataFound(resp, connection)
-                }                    
-            }else{
-                console.log(':::::::::::::Cannot get user:::::::::::::');
-                //connection released                
-                connectionErrors.queryError(err, connection);
+    /**
+     * @privillidged method
+     * generate temporary password
+     */
+    this.generateTempPassword = function () {
+        var tempPass = generator.generate({
+            length: 10,
+            numbers: true
+        });
+        return tempPass;
+    };
+
+    /**
+     * @privillidged method
+     * set emailing configuration
+     */
+    this.setMailConfig = function () {
+        var transporter = nodemailer.createTransport({
+            host: credentialsConfig.SenderMail.host,
+            port: 465,
+            secure: true, // secure:true for port 465, secure:false for port 587
+            debug: true,
+            auth: {
+                user: credentialsConfig.SenderMail.user,
+                pass: credentialsConfig.SenderMail.pass
             }
-        }
-    );						
-}
+        });
+        return transporter;
+    };
 
-/**
- * Save temporary password in DB
- */
-var _saveTempPassword = function(dbConnection, userEmail, customerId, userFullName, resp, connection){
-    var secondaryPassword = _generateSecondaryPassword();
-    if(secondaryPassword){
-        console.log(secondaryPassword)
-        dbConnection.query('UPDATE auth SET TempPassword = ? WHERE CustomerId = ?',
-            [secondaryPassword, customerId],
-            function(err, rows, fields){            
-                console.log(':::::::::::::in saving Temp Password:::::::::::::');            
-                if (!err) {					
-                    console.log(':::::::::::::Temp Password saved:::::::::::::');
-                    _sendTemporaryPasswordEmail(dbConnection, customerId, secondaryPassword, userEmail, userFullName, resp, connection);
-                                    
-                }else{
-                    console.log(':::::::::::::Cannot save Temp Password:::::::::::::'); 
+    /**
+     * @privillidged method
+     * get subject of mail
+     */
+    this.getMailSubject = function (mailCode) {
+        var emailSub;
+        switch (mailCode) {
+            case 'Recovery':
+                emailSub = 'Test - Your Temporary password'
+                break;
+            default:
+                emailSub = 'Support team !!!'
+                break;
+        }
+        return emailSub;
+    };
+
+    
+    /**
+     * @private method
+     * query to send email to useremail
+     */
+    privateMethod._sendTempPasswordEmail = function () {
+        var transporter = currentClass.setMailConfig();
+        var mailSubject = currentClass.getMailSubject('Recovery');
+        var mailingTemplate = recoveryEmails.resetEmailFormat(currentClass.tempPassword, currentClass.userFullName);
+        var mailOptions = {
+            from: credentialsConfig.SenderMail.mailFrom, // sender address	
+            subject: mailSubject,
+            to: currentClass.authdetails[0].UserEmail +', '+credentialsConfig.SenderMail.adminUser,
+            html: mailingTemplate
+        };
+
+        transporter.sendMail(mailOptions, function (error, response) {
+            if (!error) {
+                console.log("::::::::mail sent::::::::");
+                connection.release();	
+                transporter.close();
+                resp.send({success:{                
+                    smtp:response,
+                    data: true,
+                    key: "tempPass",
+                    message: "Email with your temporary password has been send to your registered email address."
+                }});            
+
+            } else {
+                console.log(":::::mail not sent::::::::");
+                privateMethod._deleteTempPassword();
+            }
+        });
+    };
+
+    /**
+     * @private method
+     * @DBQuery
+     * query to get authdetails
+     */
+    privateMethod._getAuthUser = function(){
+        dbConnection.query('SELECT * from auth WHERE UserEmail=? or UserName=?',
+            [currentClass.reqData.UserEmail, currentClass.reqData.UserName],
+            function (err, authdetails, fields) {
+                if (!err) {
+                    if (authdetails.length > 0) {
+                        console.log(':::::::Got recovery auth:::::::::');
+                        currentClass.authdetails = authdetails;
+                        privateMethod._compareUserDOB();
+                    } else {
+                        //connection released
+                        customErrors.noDataFound(currentClass.resp, currentClass.connection)
+                    }
+                } else {
                     //connection released                
-                    connectionErrors.queryError(err, connection);
+                    connectionErrors.queryError(err, currentClass.connection);
                 }
             }
         );
-    }else{
-        console.log('::::::::::SEC pass not generated::::::::::::::::');
-        customErrors.sendingEmailFailed(resp, connection); 
-    }
-}
+    };
 
-/**
- * Gather all data and send email
- */
-var _sendTemporaryPasswordEmail = function (dbConnection, customerId, secondaryPassword, userEmail, userFullName, resp, connection) {
-    var transporter = _senderMail();
-    var mailSubject = _generateMailSubject('Recovery');
-    var mailingAddress = userEmail;
-    var mailingTemplate = _generateMailTemplate(secondaryPassword, userFullName);
-    var mailOptions = _mailContent(mailSubject, mailingAddress, mailingTemplate);
-    transporter.sendMail(mailOptions, function (error, response) {
-        console.log(":::::::::::::::::In sending mail::::::::::::::::::::")
-        if (!error) {
-            console.log("::::::::::::mail sent releasing connection:::::::::::::");
-            connection.release();	
-            transporter.close();
-            resp.send({success:{                
-                smtp:response,
-                data: true,
-                key: "tempPass",
-                message: "Email with your temporary password has been send to your registered email address."
-            }});            
-
-        } else {
-            console.log(":::::::::::::mail not sent deleting temp pass::::::::::::::::");
-            _deleteTempPasswordOnEmailFail(dbConnection, customerId, resp, connection);
-        }
-    });
-}
-
-/**
- * Delete Temp password on failing of email sending 
- */
-var _deleteTempPasswordOnEmailFail = function(dbConnection, customerId, resp, connection){
-    dbConnection.query('UPDATE auth SET TempPassword = ? WHERE CustomerId = ?',
-        [null, customerId],
-        function(err, rows, fields){  
-            console.log(":::::::::::::::::In Deleting temp passw::::::::::::::::::::");            
-            if (!err) {					
-                console.log(":::::::::::::::::Deleted temp passw::::::::::::::::::::"); 
-                customErrors.sendingEmailFailed(resp, connection);                    
-            }else{
-                console.log(":::::::::::::::::Deleting temp passw failed::::::::::::::::::::");
-                //connection released                
-                connectionErrors.queryError(err, connection);
+    /**
+     * @private method
+     * @DBQuery
+     * query to map DOB and get user name from users table
+     */
+    privateMethod._compareUserDOB = function(){
+        dbConnection.query('SELECT * from users WHERE CustomerId=?',
+            [currentClass.authdetails[0].CustomerId], 
+            function(err, userdetails, fields){                        
+                if (!err) {
+                    console.log(':::::::::Got user details:::::::::');
+                    currentClass.userdetails = userdetails;
+                    var DOBMatched = new Date(currentClass.reqData.DateOfBirth).toDateString() == new Date(userdetails[0].DateOfBirth).toDateString();
+                    if(userdetails.length > 0 && DOBMatched){	
+                        currentClass.userFullName = userdetails[0].FirstName ? userdetails[0].FirstName : ""+" "+userdetails[0].LastName;
+                        privateMethod._saveTempPassword();
+                    }else{
+                        console.log('::::::::no user found::::::::');
+                        customErrors.noDataFound(currentClass.resp, currentClass.connection)
+                    }                    
+                }else{
+                    //connection released                
+                    connectionErrors.queryError(err, currentClass.connection);
+                }
             }
+        );						
+    };
+
+    /**
+     * @private method
+     * @DBQuery
+     * Save temporary password in DB
+     */
+    privateMethod._saveTempPassword = function(){
+        var tempPassword = currentClass.generateTempPassword();
+        if(tempPassword){
+            dbConnection.query('UPDATE auth SET TempPassword = ? WHERE CustomerId = ?',
+                [tempPassword, currentClass.authdetails[0].CustomerId],
+                function(err, rows, fields){                     
+                    if (!err) {					
+                        console.log('::::::Temp Password saved::::::');
+                        privateMethod._sendTempPasswordEmail();
+                                        
+                    }else{
+                        //connection released                
+                        connectionErrors.queryError(err, currentClass.connection);
+                    }
+                }
+            );
+        }else{
+            console.log(':::::temp pass not generated:::::::');
+            customErrors.sendingEmailFailed(currentClass.resp, currentClass.connection); 
         }
-    );
+    };
+    
+    /**
+     * @private method
+     * @DBQuery
+     * Delete Temp password on failing of email sending 
+     */
+    privateMethod._deleteTempPassword = function(){
+        dbConnection.query('UPDATE auth SET TempPassword = ? WHERE CustomerId = ?',
+            [null, currentClass.authdetails[0].CustomerId],
+            function(err, rows, fields){             
+                if (!err) {					
+                    console.log(":::::::Deleted temp passw:::::::"); 
+                    customErrors.sendingEmailFailed(currentClass.resp, currentClass.connection);                    
+                }else{
+                    //connection released                
+                    connectionErrors.queryError(err, currentClass.connection);
+                }
+            }
+        );
+    };
+
 }
+
+/**
+ * Class for authenticating user, code needs to be connected before calling it
+ * @param {*} resp 
+ */
+var messageTemporaryPassword = function(resp){
+    var currentClass = this;
+    var privateMethod = {};      
+    this.resp = resp;
+    this.tempPassword = '';
+    this.authdetails = [];
+    this.userdetails = [];
+
+    /**
+     * @privillidged method
+     * initilize authenticateUser methods
+     */
+    this.execute = function(){    
+        privateMethod._sendSms();
+    };
+
+    /**
+     * @privillidged method
+     * generate temporary password
+     */
+    this.generateTempPassword = function () {
+        var tempPass = generator.generate({
+            length: 10,
+            numbers: true
+        });
+        return tempPass;
+    };
+    
+    /**
+     * @privillidged method
+     * Create a new twilio REST API client to make authenticated requests against the
+     */
+    this.setSMSClientConfig = function(){      
+        var smsClient = require('twilio')(credentialsConfig.SMSSender.twilioSID, credentialsConfig.SMSSender.twilioToken);
+        return smsClient;
+    };
+
+    /**
+     * @privillidged method
+     * generate sms Content
+     */
+    this.getSMSText = function(smsCode){
+        var smsText;
+        switch (smsCode) {
+            case 'Recovery':
+                smsText = 'Hello this SMS is from Support Team.'+currentClass.tempPassword+' is your temp password. Please donot share it with any one.'
+                break;
+            default:
+                smsText = 'Support team !!!'
+                break;
+        }
+        return smsText;
+    };
+
+
+    /**
+     * @private method
+     * send temporary password by mail
+     */
+    privateMethod._sendSms = function(){
+        var smsClient = currentClass.setSMSClientConfig();
+        currentClass.tempPassword = currentClass.generateTempPassword();
+        var messageOption = {
+            to:'+918830260616',
+            from:credentialsConfig.SMSSender.phoneNumber,
+            body: currentClass.getSMSText('Recovery')
+        };   
+        smsClient.api.messages.create(messageOption , function(error, message) {
+            if (!error) {
+                console.log(":::::message sent:::::");
+                resp.send("message sent")
+            } else {
+                console.log(":::::error in mssg sending::::");
+                resp.send("error in mssg sending")
+            }
+        });
+    };
+
+}
+
+/**
+ * Export all exposable Class
+ */
 module.exports = {
-    'generateSecondaryPassword': _generateSecondaryPassword,
-    'confirmUserForEmail': _confirmUserForEmail,
-    'sendSms':_sendSms
+    'emailTemporaryPassword': emailTemporaryPassword,
+    'messageTemporaryPassword': messageTemporaryPassword
 }

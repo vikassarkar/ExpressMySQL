@@ -5,7 +5,6 @@
 
 'use strict';
 
-
 /**
  * Registration api url handler
  * @connectionErrors - generic db connection errors handler

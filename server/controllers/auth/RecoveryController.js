@@ -5,10 +5,15 @@
 
 'use strict';
 
+/**
+ * Registration api url handler
+ * @connectionErrors - generic db connection errors handler
+ * @customErrors - generic custom errors handler
+ * @recoveryUtils - recovery utility functions for all data manupulation and curd operations
+ */
 var connectionErrors = require('../../utilities/ConnectionErrors'),
 	customErrors = require('../../utilities/CustomErrors'),
-	recoveryUtils = require('./utils/RecoveryUtils'),
-	async = require('async');
+	recoveryUtils = require('./utils/RecoveryUtils');
 	
 module.exports = function (app, route, dbConnection) {
 
@@ -20,82 +25,22 @@ module.exports = function (app, route, dbConnection) {
 	});
 
 	/**
-	 * @UserEmail
-	 * @UserName
-	 * @DateOfBirth
+	 * Get temporary password onregistered email with provided params
+	 * @req - request params for api
+	 * @resp - response tobe send
+	 * @req param {* ||} UserEmail
+	 * @req param {* ||} UserName
+	 * @req param {*} DateOfBirth
 	 */
 	app.post('/recovery/recoverPassword', function (req, resp) {
 		dbConnection.getConnection(function (err, connection) {
-			console.log('::::::::::::::::::in mysql pool connection::::::::::::::::::');
+			console.log(':::::::in mysql pool connection::::::::');
 			if (!err) {
 				var reqData = req.body;
-				dbConnection.query('SELECT * from auth WHERE UserEmail=? or UserName=?',
-					[reqData.UserEmail, reqData.UserName],
-					function (err, authDetails, fields) {
-						if (!err) {
-							if (authDetails.length > 0) {
-								console.log(':::::::::::::Got recovery auth:::::::::::::');
-								// send mail with defined transport object
-								recoveryUtils.confirmUserForEmail(dbConnection, authDetails[0].UserEmail, authDetails[0].CustomerId, reqData, resp, connection);
-							} else {
-								customErrors.noDataFound(resp, connection)
-							}
-						} else {
-							//connection released                
-							connectionErrors.queryError(err, connection);
-						}
-					}
-				);
-
+				var emailTempPassword = new recoveryUtils.emailTemporaryPassword(dbConnection, reqData, resp, connection);
+				emailTempPassword.execute();
 			} else {
-				connectionErrors.connectionError(err, connection);
-			}
-		});
-	});
-
-	/**
-	 * Remove temp password
-	 * @UserEmail
-	 * @UserName
-	 */
-	app.post('/recovery/removeTempPassword', function (req, resp) {
-		dbConnection.getConnection(function (err, connection) {
-			console.log('::::::::::::::::::in mysql pool connection::::::::::::::::::');
-			if (!err) {
-				var reqData = req.body;
-				dbConnection.query('SELECT * from auth WHERE UserEmail=? or UserName=?',
-					[reqData.UserEmail, reqData.UserName],
-					function (err, authDetails, fields) {
-						if (!err) {
-							if (authDetails.length > 0) {
-								var customerId = authDetails[0].CustomerId;
-								var secondaryPassword = 'Vikas'
-								console.log(':::::::::::::Got recovery auth:::::::::::::');
-								dbConnection.query('UPDATE auth SET TempPassword = ? WHERE CustomerId = ?',
-									[null, customerId],
-									function (err, rows, fields) {
-										if (!err) {
-											console.log(':::::::::::::Temp Password Removed:::::::::::::');
-											console.log(rows);
-											resp.send('Temp deleted')
-
-										} else {
-											//connection released                
-											connectionErrors.queryError(err, connection);
-										}
-									}
-								);
-							} else {
-								customErrors.noDataFound(resp, connection)
-							}
-						} else {
-							//connection released                
-							connectionErrors.queryError(err, connection);
-						}
-					}
-				);
-
-			} else {
+				//connection released 
 				connectionErrors.connectionError(err, connection);
 			}
 		});
@@ -103,23 +48,28 @@ module.exports = function (app, route, dbConnection) {
 
     /**
      * Send message
+	 * @req - request params for api
+	 * @resp - response tobe send
      */
 	app.get('/recovery/sendSMS', function (req, resp) {
-		console.log('in app get')
-		recoveryUtils.sendSms(resp);
+		console.log(':::::::Sending message:::::::')
+		var SMS = new recoveryUtils.messageTemporaryPassword(resp);
+		SMS.execute();
 	});
 
 
     /**
      * Backup API if API doesn't exist at all
+	 * @req - request params for api
+	 * @resp - response tobe send
      */
 	app.get('/recovery/:id', function (req, res) {
 		res.send('respond with a home data with id - ' + req.params.id);
 	});
 
-	/*
-     **Return middleware.
-     */
+	/**
+	 * Return middleware.
+	 */
 	return function (req, res, next) {
 		next();
 	};
