@@ -46,6 +46,28 @@ module.exports = function (app, route, dbConnection) {
 		});
 	});
 
+	/**
+	 * map temporary password to reset password
+	 * @req - request params for api
+	 * @resp - response tobe send
+	 * @req param {* ||} UserEmail
+	 * @req param {* ||} UserName
+	 * @req param {*} TempPassword
+	 * @req param {*} UserPassword
+	 */
+	app.post('/recovery/resetPassword', function (req, resp) {
+        dbConnection.getConnection(function (err, connection) {
+			console.log('::::in mysql pool connection::::::');
+			if (err) {
+				connectionErrors.connectionError(err, connection);
+			}			
+			var reqData = req.body;
+			var resetPassword = new recoveryUtils.resetTemporaryPassword(dbConnection, reqData, resp, connection);
+			resetPassword.execute();
+		});
+	});
+
+
     /**
      * Send message
 	 * @req - request params for api
