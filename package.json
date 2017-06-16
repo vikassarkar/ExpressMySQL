@@ -1,6 +1,8 @@
 {
-  "name": "node-mysql",
+  "name": "EXS",
   "version": "0.0.1",
+  "author": "Vikas Sarkar",
+  "license": "ISC",
   "dependencies": {
     "async": "^2.4.1",
     "bcrypt": "^1.0.2",
