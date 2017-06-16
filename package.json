@@ -16,6 +16,8 @@
     "twilio": "^3.3.0"
   },
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "start live": "forever start index.js",
+    "stop live": "forever stop index.js"
   }
 }
