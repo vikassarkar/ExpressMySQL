@@ -12,7 +12,7 @@
  * @router - express router to route in folders
  * @path - to provide absolute path
  * @logger - log all details
- * @cookieParser - parse cookie
+ * @cookieParser - parse cookie/headers
  * @bodyParser - parse request and response for express api
  * @_ - lodash used for utilities function
  * @dbConnection - connection for MYSQL DB
@@ -49,6 +49,11 @@ module.exports = function() {
 	app.use(bodyParser.urlencoded({
 		extended: false
 	}));	
+
+	/**
+	 * cookie paeser to parse all header cookies
+	 */
+	app.use(cookieParser());
 	
 	/**
 	 * Define dynamic routes to have septare controllers for seprate module

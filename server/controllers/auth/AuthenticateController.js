@@ -31,6 +31,10 @@ module.exports = function(app, route, dbConnection){
 	 * @req param {*} UserPassword: provided String param for password
 	 */
 	app.post('/login/auth', function (req, resp) {
+		console.log(req.headers)
+		console.log("******************************************************")
+		console.log("\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/");
+		console.log(req.cookies)
         dbConnection.getConnection(function (err, connection) {
 			console.log('::::::in mysql pool connection:::::::');
 			if (err) {
@@ -49,6 +53,15 @@ module.exports = function(app, route, dbConnection){
      */
 	app.get('/login/:id', function(req, res) {
 		res.send('respond with a home data with id - '+ req.params.id);
+	});
+
+	/**
+	 * Trial api for handeling parameterized request
+	 * @req - request params for api
+	 * @resp - response tobe send
+	 */
+	app.get('/login/init/:id1/:id2', function (req, resp) {
+		resp.send('<h1 style="color:green">Node hosted sucessfully</h1><p>you can now jump to API.</p> ---'+req.params.id1+"---"+req.params.id2);
 	});
 
 	/**
